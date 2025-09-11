@@ -1,0 +1,27 @@
+name: Copy asset from other repo
+
+on:
+  workflow_dispatch:  # يعني هنشغله يدوي من صفحة Actions
+
+jobs:
+  copy-asset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # يخلي الـ push شغال بالتوكن
+
+      - name: Download asset from large-file release
+        run: |
+          curl -L -o commandlinetools-linux-13114758_latest.zip \
+            "https://github.com/asaadtaher012-cyber/large-file/releases/download/v1.0/commandlinetools-linux-13114758_latest.zip"
+
+      - name: Commit and push asset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add commandlinetools-linux-13114758_latest.zip
+          git commit -m "Add asset from large-file repo" || echo "Nothing to commit"
+          git push
